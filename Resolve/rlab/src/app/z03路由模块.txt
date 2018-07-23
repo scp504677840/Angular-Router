@@ -1,0 +1,45 @@
+路由模块
+在原始的路由配置中，你提供了仅有两个路由的简单配置来设置应用的路由。
+对于简单的路由，这没有问题。
+随着应用的成长，你用到了更多路由器特性，比如守卫、解析器和子路由等，你会很自然地想要重构路由。
+我们建议将路由信息移到一个单独的特殊用途的模块，叫做路由模块。
+
+路由模块有一系列特性：
+1.把路由这个关注点从其它应用类关注点中分离出去。
+2.测试特性模块时，可以替换或移除路由模块。
+3.为路由服务提供商（包括守卫和解析器等）提供一个共同的地方。
+4.不要声明组件。
+
+将路由配置重构为路由模块
+在 /app 目录下创建一个名叫 app-routing.module.ts 的文件，以包含这个路由模块。
+
+导入 CrisisListComponent 和 HeroListComponent 组件，
+就像 app.module.ts 中一样。然后把 Router 的导入语句和路由配置以及 RouterModule.forRoot 移入这个路由模块中。
+
+遵循规约，添加一个 AppRoutingModule 类并导出它，以便稍后在 AppModule 中导入它。
+
+最后，可以通过把它添加到该模块的 exports 数组中来再次导出 RouterModule。
+通过在 AppModule 中导入 AppRoutingModule 并再次导出 RouterModule，
+那些声明在 AppModule 中的组件就可以访问路由指令了，比如 RouterLink 和 RouterOutlet。
+@see AppRoutingModule
+
+接下来，修改 app.module.ts 文件，
+首先从 app-routing.module.ts 中导入新创建的 AppRoutingModule，
+然后把 imports 数组中的 RouterModule.forRoot 替换为 AppRoutingModule。
+@see AppModule
+
+你需要路由模块吗？
+路由模块在根模块或者特性模块替换了路由配置。
+在路由模块或者在模块内部配置路由，但不要同时在两处都配置。
+
+路由模块是设计选择，它的价值在配置很复杂，并包含专门守卫和解析器服务时尤其明显。
+在配置很简单时，它可能看起来很多余。
+
+在配置很简单时，一些开发者跳过路由模块（例如 AppRoutingModule），并将路由配置直接混合在关联模块中（比如 AppModule ）。
+从中选择一种模式，并坚持模式的一致性。
+
+大多数开发者都应该采用路由模块，以保持一致性。
+它在配置复杂时，能确保代码干净。
+它让测试特性模块更加容易。
+它的存在让人一眼就能看出这个模块是带路由的。
+开发者可以很自然的从路由模块中查找和扩展路由配置。
