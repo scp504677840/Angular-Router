@@ -1,0 +1,26 @@
+CanLoad 守卫：保护对特性模块的未授权加载
+你已经使用 CanActivate 保护 AdminModule 了，它会阻止未授权用户访问管理特性区。
+如果用户未登录，它就会跳转到登录页。
+
+但是路由器仍然会加载 AdminModule —— 即使用户无法访问它的任何一个组件。
+理想的方式是，只有在用户已登录的情况下你才加载 AdminModule。
+
+添加一个CanLoad守卫，它只在用户已登录并且尝试访问管理特性区的时候，才加载 AdminModule 一次。
+现有的 AuthGuard 的 checkLogin() 方法中已经有了支持 CanLoad 守卫的基础逻辑。
+
+打开 auth-guard.service.ts，从 @angular/router 中导入 CanLoad 接口。
+把它添加到 AuthGuard 类的 implements 列表中。
+然后实现 canLoad，代码如下：
+canLoad(route: Route): boolean {
+  let url = `/${route.path}`;
+  return this.checkLogin(url);
+}
+@see AuthGuardService.canLoad
+
+路由器会把 canLoad() 方法的 route 参数设置为准备访问的目标 URL。
+如果用户已经登录了，checkLogin() 方法就会重定向到那个 URL。
+
+现在，把 AuthGuard 导入到 AppRoutingModule 中，
+并把 AuthGuard 添加到 admin 路由的 canLoad 数组中。
+完整的 admin 路由是这样的：
+@see appRoutes

@@ -1,0 +1,8 @@
+导航回列表组件
+HeroDetailComponent 组件有一个“Back”按钮，关联到它的 gotoHeroes 方法，该方法会导航回 HeroListComponent 组件。
+路由的 navigate 方法同样接受一个单条目的链接参数数组，
+你也可以把它绑定到 [routerLink] 指令上。
+它保存着到 HeroListComponent 组件的路径：
+gotoHeroes() {
+   this.router.navigate(['/heroes']);
+}
