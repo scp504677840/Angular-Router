@@ -1,0 +1,45 @@
+异步路由
+完成上面的里程碑后，应用程序很自然的长大了。
+在继续构建特征区的过程中，应用的体积将会变得更大。
+在某一个时间点，你将达到一个顶点，应用将会需要过多的时间来加载。
+
+如何才能解决这个问题呢？
+通过引进异步路由，可以获得在请求时才惰性加载特性模块的能力。
+惰性加载有多个优点：
+你可以只在用户请求时才加载某些特性区。
+对于那些只访问应用程序某些区域的用户，这样能加快加载速度。
+你可以持续扩充惰性加载特性区的功能，而不用增加初始加载的包体积。
+
+你已经完成了一部分。
+通过把应用组织成一些模块：AppModule、HeroesModule、AdminModule 和 CrisisCenterModule，
+你已经有了可用于实现惰性加载的候选者。
+
+有些模块（比如 AppModule）必须在启动时加载，但其它的都可以而且应该惰性加载。
+比如 AdminModule 就只有少数已认证的用户才需要它，所以你应该只有在正确的人请求它时才加载。
+
+惰性加载路由配置
+把 admin-routing.module.ts 中的 admin 路径从 'admin' 改为空路径 ''。
+
+Router 支持空路径路由，可以使用它们来分组路由，而不用往 URL 中添加额外的路径片段。
+用户仍旧访问 /admin，并且 AdminComponent 仍然作为用来包含子路由的路由组件。
+
+打开 AppRoutingModule，并把一个新的 admin 路由添加到它的 appRoutes 数组中。
+
+给它一个 loadChildren 属性（注意不是 children 属性），把它设置为 AdminModule 的地址。
+该地址是 AdminModule 的文件路径（相对于 app 目录的），加上一个 # 分隔符，再加上导出模块的类名 AdminModule。
+{
+   path: 'admin',
+   loadChildren: 'app/admin/admin.module#AdminModule',
+}
+当路由器导航到这个路由时，它会用 loadChildren 字符串来动态加载 AdminModule，
+然后把 AdminModule 添加到当前的路由配置中， 最后，它把所请求的路由加载到目标 admin 组件中。
+
+惰性加载和重新配置工作只会发生一次，也就是在该路由首次被请求时。在后续的请求中，该模块和路由都是立即可用的。
+
+Angular 提供一个内置模块加载器，支持SystemJS来异步加载模块。
+如果你使用其它捆绑工具比如 Webpack，则使用 Webpack 的机制来异步加载模块。
+
+最后一步是把管理特性区从主应用中完全分离开。
+根模块 AppModule 既不能加载也不能引用 AdminModule 及其文件。
+在 app.module.ts 中，从顶部移除 AdminModule 的导入语句，并且从 Angular 模块的 imports 数组中移除 AdminModule。
+@see AppModule
